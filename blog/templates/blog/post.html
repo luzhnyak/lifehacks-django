@@ -1,0 +1,48 @@
+{% extends "layout.html" %} 
+
+{% block title %}<title>{{ post.title }} - ITshnyk</title>{% endblock %}
+
+{% block metatags %}
+    <meta name="description" content="{{ post.anons }}" />    
+    <link rel="canonical" href="https://itshnyk.in.ua/{{ post.category.slug }}/{{ post.slug }}" />
+    <meta property="og:title" content="{{ post.title }}" />
+    <meta property="og:description" content="{{ post.anons }}" />
+    <meta property="og:url" content="https://itshnyk.in.ua/posts/{{ post.category.slug }}/{{ post.slug }}" />
+    <meta property="og:type" content="article" />
+    {% if post.main_image %}
+    <meta property="og:image" content="https://itshnyk.in.ua{{ post.main_image }}"/>
+    {% else %}
+    <meta property="og:image" content="https://itshnyk.in.ua/img/image.png" />
+    {% endif %}
+{% endblock %} 
+
+{% block content %}
+  <h1>{{ post.title }}</h1>
+
+  <nav aria-label="breadcrumb">
+    <ul class="breadcrumb">
+      <li class="breadcrumb-item">
+        <a href="/">Головна</a> <span class="divider"></span>
+      </li>
+      <li class="breadcrumb-item">
+        <a href="/posts">Posts</a> <span class="divider"></span>
+      </li>      
+      <li class="breadcrumb-item active" aria-current="page">
+        {{ post.title }}
+      </li>
+    </ul>
+  </nav>
+
+  <article class="article-content">
+    {{ post.content|safe }}
+    {% if post.video %}    
+    <div class="video">
+      <iframe width="560" height="315" src="https://www.youtube.com/embed/{{ post.video }}" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    </div>
+    {% endif %}   								
+  </article>
+{% endblock %} 
+
+{% block disqus %}
+{% include 'includes/_disqus.html' %}
+{% endblock %}
