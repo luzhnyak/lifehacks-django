@@ -1,0 +1,2 @@
+# lifehacks-django
+Lifehacks
