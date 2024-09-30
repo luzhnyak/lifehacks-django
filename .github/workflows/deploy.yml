@@ -31,6 +31,13 @@ jobs:
           password: ${{ secrets.SERVER_PASSWORD }} # пароль замість SSH ключа
           port: 22  # зазвичай це стандартний порт SSH
           script: |
+            if [ ! -d "/www/wwwroot/lifehacks.in.ua/.git" ]; then
+                git clone https://github.com/luzhnyak/lifehacks-django.git /www/wwwroot/lifehacks.in.ua
+            fi
             cd /www/wwwroot/lifehacks.in.ua
             git pull origin main
-
+            source venv/bin/activate
+            pip install -r requirements.txt
+            python manage.py migrate
+            python manage.py collectstatic --noinput
+            sudo systemctl restart uswgi
