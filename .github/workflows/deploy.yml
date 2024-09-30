@@ -36,8 +36,8 @@ jobs:
             fi
             cd /www/wwwroot/lifehacks.in.ua
             git pull origin main
-            source venv/bin/activate
+            source b354d0accbb6c82439a8f48fe02087b9_venv/bin/activate
             pip install -r requirements.txt
             python manage.py migrate
             python manage.py collectstatic --noinput
-            sudo systemctl restart uswgi
+            sudo systemctl restart uwsgi
