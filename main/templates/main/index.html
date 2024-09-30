@@ -17,5 +17,21 @@
   <p>
     Лайфхаки
   </p>
+  {% for category in categories %}
+  <h2>{{ category.name }}</h2>
+    <div class="row mb-3 mt-3 gap-3">
+    {% for post in category.posts.all|slice:":4" %}
+      <div class="card" style="width: 18rem;">
+        <a href="/posts/{{ post.slug }}">
+          <img src="static/img/image.jpg" class="card-img-top" alt="...">
+        </a>
+        <div class="card-body">
+          <h3 class="card-text">{{ post.title }}</h3>
+        </div>
+      </div>
+    {% endfor %}
+    </div>
+  {% endfor %}
+  
 </section>
 {% endblock %}

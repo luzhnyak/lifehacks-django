@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.shortcuts import get_object_or_404
 from .models import Post
 from .models import Category, Post
 from django.core.paginator import Paginator
@@ -10,16 +11,17 @@ def index(request):
 
 
 def posts(request):
-    category_name = request.GET.get('category')
+    category_slug = request.GET.get('category')
     page_number = request.GET.get('page')
 
-    if category_name:
-        posts = Post.objects.filter(categories__name=category_name)
+    if category_slug:
+        category = get_object_or_404(Category, slug=category_slug)
+        posts = category.posts.all()
     else:
         posts = Post.objects.all()
+        category = None
 
     categories = Category.objects.all()
-    category = Category.objects.filter(slug=category_name).first()
 
     paginator = Paginator(posts, 5)
     page_obj = paginator.get_page(page_number)
