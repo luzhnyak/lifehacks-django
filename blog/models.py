@@ -2,7 +2,7 @@ from django.db import models
 from django.urls import reverse
 from django.utils.text import slugify
 import itertools
-from unidecode import unidecode
+from Unidecode import unidecode
 
 
 class Category(models.Model):
