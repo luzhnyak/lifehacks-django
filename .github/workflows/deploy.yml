@@ -38,7 +38,7 @@ jobs:
             git config --global --add safe.directory /www/www***/lifehacks.in.ua
             git pull origin main
             # supervisorctl restart lifehacks
-            sudo systemctl restart lifehacks_pymanager
+            # sudo systemctl restart lifehacks_pymanager
             # source b354d0accbb6c82439a8f48fe02087b9_venv/bin/activate
             # pip install -r requirements.txt
             # python manage.py migrate

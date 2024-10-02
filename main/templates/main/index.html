@@ -14,11 +14,11 @@
 
 {% block content %}
 <section>
-  <p>
-    Лайфхаки
-  </p>
+  <h1>Лайфхаки в Україні</h1>  
   {% for category in categories %}
-  <h2>{{ category.name }}</h2>
+  <a href="/posts/?category={{ category.slug }}">
+    <h2>{{ category.name }} - {{ category.description }}</h2>
+  </a>
     <div class="row mb-3 mt-3 gap-3">
     {% for post in category.posts.all|slice:":4" %}
       <div class="card" style="width: 18rem;">
