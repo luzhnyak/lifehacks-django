@@ -138,3 +138,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
+CSRF_TRUSTED_ORIGINS = ['https://lifehacks.in.ua',
+                        'https://www.lifehacks.in.ua']
