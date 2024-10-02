@@ -26,7 +26,8 @@ SECRET_KEY = 'django-insecure-@id^n3#6(%q3qcj3#ux#^x8*$0c55b2)uz5tgp-%67%*+)u3t-
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['lifehacks.in.ua', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['lifehacks.in.ua',
+                 'www.lifehacks.in.ua', 'localhost', '127.0.0.1']
 
 
 # Application definition
@@ -134,3 +135,6 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'static', 'media')
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
