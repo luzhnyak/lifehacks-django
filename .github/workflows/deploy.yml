@@ -36,6 +36,7 @@ jobs:
             fi
             cd /www/wwwroot/lifehacks.in.ua
             git config --global --add safe.directory /www/www***/lifehacks.in.ua
+            git reset --hard HEAD
             git pull origin main
             # supervisorctl restart lifehacks
             # sudo systemctl restart lifehacks_pymanager

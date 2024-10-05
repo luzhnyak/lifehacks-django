@@ -150,7 +150,7 @@ class Post(models.Model):
         return text.lstrip()[0:300]
 
     def get_absolute_url(self):
-        return reverse('post_detail', args=[str(self.category.slug), str(self.slug)])
+        return reverse('post_detail', args=[str(self.slug)])
 
     def __str__(self):
         return self.title

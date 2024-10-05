@@ -1,13 +1,13 @@
 from django.contrib.sitemaps import Sitemap
-from .models import Post, Category
+from .models import Post
 
 
-class CategorySitemap(Sitemap):
-    changefreq = 'daily'
-    priority = 0.9
+# class CategorySitemap(Sitemap):
+#     changefreq = 'daily'
+#     priority = 0.9
 
-    def items(self):
-        return Category.objects.all()
+#     def items(self):
+#         return Category.objects.all()
 
 
 class PostSitemap(Sitemap):
