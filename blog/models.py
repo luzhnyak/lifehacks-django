@@ -108,11 +108,18 @@ def resize_and_crop_image(sender, instance, **kwargs):
             img.save(img_path)
 
 
+def post_image_upload_to(instance, filename):
+    extension = filename.split('.')[-1]
+    filename = f"{instance.slug}.{extension}"
+    return os.path.join('posts/', filename)
+
+
 class Post(models.Model):
     title = models.CharField(max_length=200)
     slug = models.CharField(max_length=200, unique=True, blank=True)
     content = models.TextField()
-    image = models.CharField(max_length=200, blank=True, null=True)
+    image = models.ImageField(
+        upload_to=post_image_upload_to, blank=True, null=True)
     youtube = models.CharField(max_length=100, blank=True, null=True)
     tiktok = models.CharField(max_length=100, blank=True, null=True)
     categories = models.ManyToManyField(Category, related_name='posts')
@@ -147,3 +154,18 @@ class Post(models.Model):
 
     def __str__(self):
         return self.title
+
+
+@receiver(post_save, sender=Post)
+def resize_image_post(sender, instance, **kwargs):
+    if instance.image:
+        img_path = instance.image.path
+        if os.path.exists(img_path):  # Перевіряємо, чи існує файл
+            img = Image.open(img_path)
+
+            # Максимальні розміри
+            max_size = (800, 600)
+            img.thumbnail(max_size)
+
+            # Зберігаємо зображення
+            img.save(img_path)

@@ -1,19 +1,23 @@
 {% extends "layout.html" %}
 
-{% block title %}<title>{{ category.name }} - Лайфхаки в Україні</title>{% endblock %} 
+{% block title %}<title>{{ category.description }} - Lifehacks</title>{% endblock %} 
 
 {% block metatags %}
     <meta name="description" content="{{ category.description }}" />
-    <link rel="canonical" href="https://itshnyk.in.ua/posts/{{ category.slug }}" />
+    <link rel="canonical" href="https://lifehacks.in.ua/posts/?category={{ category.slug }}" />
     <meta property="og:title" content="{{ category.name }}" />
     <meta property="og:description" content="{{ category.description }}" />
-    <meta property="og:url" content="https://itshnyk.in.ua/posts/{{ category.slug }}" />
-    <meta property="og:type" content="website" />
-    <meta property="og:image" content="https://itshnyk.in.ua/static/img/image.png" />
+    <meta property="og:url" content="https://lifehacks.in.ua/posts/?category={{ category.slug }}" />
+    <meta property="og:type" content="website" />    
+    {% if category.image %}
+    <meta property="og:image" content="https://lifehacks.in.ua/media/{{ category.image }}" />
+    {% else %}
+    <meta property="og:image" content="https://lifehacks.in.ua/static/img/image.jpg" />
+    {% endif %}
 {% endblock %} 
 
 {% block content %}
-<h1>{{ category.name }}</h1>
+<h1>{{ category.description }}</h1>
 
 <nav aria-label="breadcrumb">
   <ul class="breadcrumb">
@@ -22,7 +26,7 @@
     </li>
 
     <li class="breadcrumb-item">
-      <a href="/posts">Posts</a> <span class="divider"></span>
+      <a href="/posts">Лайфхаки</a> <span class="divider"></span>
     </li>    
 
     <li class="breadcrumb-item active" aria-current="page">
@@ -36,22 +40,18 @@
   <div class="col-12 p-2">
     <div class="card">
       <div class="card-header">
-        <a
-          class=""
-          href="/posts/{{post.slug}}"
-          title="{{post.textbody}}"
-          ><i class="{{ post.icon }} fa-lg"></i> {{post.title}}</a
-        >
+        <a class="" href="/posts/{{post.slug}}" title="{{post.textbody}}">
+          <i class="{{ post.icon }} fa-lg"></i>
+          <h4>{{post.title}}</h4>
+        </a>
       </div>
       <div class="posts-card-body">
-        {% if post.main_image %}
-
-        <img
-          src="{{ post.main_image }}"
-          class="card-img-left thum-img"
-          alt="..."
-        />
-
+        {% if post.image %}
+        <img src="/media/{{ post.image }}" class="card-img-left thum-img" alt="..." />
+        {% elif category.image %}
+        <img src="/media/{{ category.image }}" class="card-img-left thum-img" alt="..." />
+        {% else %}
+        <img src="/static/img/image.jpg" class="card-img-left thum-img" alt="..." />
         {% endif %}
         <div class="card-body">
           <div class="card-text">{{ post.anons }} ...</div>
@@ -61,7 +61,7 @@
   </div>
   {% endfor %}
 
-  <nav aria-label="Page navigation">
+  <nav class="mt-3" aria-label="Page navigation">
     <ul class="pagination">
       {% if page_obj.has_previous %}
         <li class="page-item">
