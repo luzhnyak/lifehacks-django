@@ -37,12 +37,12 @@
     <p>{{ post.content|safe }}</p>
     {% if post.image %}
     <div class="container">
-      <img class="d-block mx-auto" src="/media/{{ post.image }}" width=800 alt="{{ post.title }}" />
+      <img class="d-block mx-auto" src="/media/{{ post.image }}" alt="{{ post.title }}" />
     </div>
     {% endif %}
-    {% if post.video %}    
+    {% if post.youtube %}    
     <div class="video">
-      <iframe width="560" height="315" src="https://www.youtube.com/embed/{{ post.video }}" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+      <iframe width="560" height="315" src="https://www.youtube.com/embed/{{ post.youtube }}" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
     </div>
     {% endif %}   								
   </article>

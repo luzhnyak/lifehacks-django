@@ -35,29 +35,10 @@
   </ul>
 </nav>
 
-<div class="row">
+<div class="row g-3">
   {% for post in page_obj %}
-  <div class="col-12 p-2">
-    <div class="card">
-      <div class="card-header">
-        <a class="" href="/posts/{{post.slug}}" title="{{post.textbody}}">
-          <i class="{{ post.icon }} fa-lg"></i>
-          <h4>{{post.title}}</h4>
-        </a>
-      </div>
-      <div class="posts-card-body">
-        {% if post.image %}
-        <img src="/media/{{ post.image }}" class="card-img-left thum-img" alt="..." />
-        {% elif category.image %}
-        <img src="/media/{{ category.image }}" class="card-img-left thum-img" alt="..." />
-        {% else %}
-        <img src="/static/img/image.jpg" class="card-img-left thum-img" alt="..." />
-        {% endif %}
-        <div class="card-body">
-          <div class="card-text">{{ post.anons }} ...</div>
-        </div>
-      </div>
-    </div>
+  <div class="col-md-6 col-lg-3">
+      {% include 'includes/_card.html' %}
   </div>
   {% endfor %}
 
