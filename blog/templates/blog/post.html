@@ -44,7 +44,12 @@
     <div class="video">
       <iframe width="560" height="315" src="https://www.youtube.com/embed/{{ post.youtube }}" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
     </div>
-    {% endif %}   								
+    {% endif %} 
+    <div class="mt-4">      
+      {% for category in post.categories.all %}    
+      <a class="btn btn-outline-secondary btn-sm" href="/posts/?category={{ category.slug }}" role="button">{{ category.name }}</a>
+      {%endfor%}  
+    </div>    							
   </article>
 {% endblock %} 
 
