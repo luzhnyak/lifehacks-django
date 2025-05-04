@@ -20,16 +20,11 @@
     <a href="/posts/?category={{ category.slug }}">
       <h2>{{ category.description }}</h2>
     </a>
-    <div class="row mb-3 mt-3 gap-3">
+    <div class="row mb-3 mt-3 g-3">
     {% for post in category.posts.all|slice:":4" %}
-      <div class="card" style="width: 18rem;">
-        <a href="/posts/{{ post.slug }}">
-          <img src="{% if category.image %}/media/{{ category.image }}{% else %}/static/img/image.jpg{% endif %}" class="card-img-top" alt="...">
-        </a>
-        <div class="card-body">
-          <h3 class="card-text">{{ post.title }}</h3>
-        </div>
-      </div>
+    <div class="col-md-6 col-lg-3">
+      {% include 'includes/_card.html' %}
+    </div>
     {% endfor %}
     </div>
     {% endif %}

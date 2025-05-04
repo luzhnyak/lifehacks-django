@@ -1,0 +1,17 @@
+<div class="card h-100 hover-shadow" >
+    <div class="position-relative">
+            <a href="/posts/{{ post.slug }}">
+                <img src="{% if post.image %}/media/{{ post.image }}{% elif category.image %}/media/{{ category.image }}{% else %}/static/img/image.jpg{% endif %}" 
+                class="card-img-top img-fluid img-cover" 
+                alt="{{ post.title }}">        
+            <div class="overlay">
+                <div class="overlay-text">{{ post.anons|slice:":80" }}</div>
+            </div> 
+        </a>
+    </div>    
+    <div class="card-body">
+        <a href="/posts/{{ post.slug }}">
+            <h5 class="card-text">{{ post.title }}</h5>
+        </a>
+    </div>
+</div>

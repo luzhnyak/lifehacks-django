@@ -23,7 +23,7 @@ def posts(request):
 
     categories = Category.objects.all()
 
-    paginator = Paginator(posts, 5)
+    paginator = Paginator(posts, 12)
     page_obj = paginator.get_page(page_number)
 
     return render(request, 'blog/posts.html', {"categories": categories, "category": category, "page_obj": page_obj, "active": "posts"})
