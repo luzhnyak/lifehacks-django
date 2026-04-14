@@ -22,7 +22,7 @@ jobs:
           port: 3022
           script: |
             set -e
-            APP_DIR="/home/ogirok/htdocs/www.lifehacks.in.ua"            
+            APP_DIR="/home/lifehacks/htdocs/www.lifehacks.in.ua"            
             REPO_URL="git@github.com:luzhnyak/lifehacks-django.git"
 
             cd $APP_DIR
