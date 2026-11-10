@@ -92,3 +92,4 @@ jobs:
             python manage.py check --deploy
             python manage.py migrate --noinput
             python manage.py collectstatic --noinput
+            sudo -n supervisorctl restart lifehacks.in.ua

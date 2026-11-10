@@ -70,9 +70,22 @@ HSTS для піддоменів і preload навмисно вимкнені; `
    Django обслуговує медіа лише локально при `DEBUG=true`.
 5. Встановіть залежності, виконайте `python manage.py check --deploy`,
    `python manage.py migrate --noinput` і `python manage.py collectstatic --noinput`.
-6. Перезапустіть сервіс командою `sudo supervisorctl restart lifehacks.in.ua`.
-   Якщо він зупинений, використовуйте `sudo supervisorctl start lifehacks.in.ua`.
-   Workflow не виконує перезапуск: дозвіл sudo для SSH-користувача не перевірявся.
+6. Workflow автоматично виконує `sudo -n supervisorctl restart lifehacks.in.ua`
+   після успішних перевірок, міграцій і collectstatic. Якщо перезапуск не вдасться,
+   деплой завершиться помилкою.
+
+Одноразово дозвольте SSH-користувачу з GitHub Secret `SERVER_USER` перезапускати
+цей процес без пароля. Знайдіть шлях командою `command -v supervisorctl`,
+відкрийте `sudo visudo -f /etc/sudoers.d/lifehacks-deploy` і додайте правило
+(замініть `DEPLOY_USER` та шлях на фактичні):
+
+```sudoers
+DEPLOY_USER ALL=(root) NOPASSWD: /usr/bin/supervisorctl restart lifehacks.in.ua
+```
+
+`-n` забороняє sudo чекати пароль у CI. Правило дозволяє лише цю команду
+для цього процесу. Після збереження від імені SSH-користувача перевірте
+`sudo -n supervisorctl restart lifehacks.in.ua` — команда перезапустить сайт.
 
 При `ERROR (spawn error)` подивіться конкретну помилку:
 
