@@ -2,8 +2,14 @@ import os
 from pathlib import Path
 
 from django.core.exceptions import ImproperlyConfigured
+from dotenv import load_dotenv
 
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Supervisor/Gunicorn do not inherit exports from a previous SSH deployment.
+# Use this explicit path so loading works regardless of the working directory.
+# Values configured by the process manager always take precedence.
+load_dotenv(BASE_DIR / '.env', override=False)
 
 
 def env_bool(name, default=False):

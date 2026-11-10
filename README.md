@@ -17,9 +17,10 @@ $env:DJANGO_DEBUG = 'true'
 На Linux/macOS: `python3 -m venv .venv`, `source .venv/bin/activate`,
 `export DJANGO_DEBUG=true`, далі використовуйте `python manage.py ...`.
 
-`.env.example` описує змінні середовища. Django **не читає `.env` автоматично**:
-встановлюйте змінні в оболонці або через менеджер процесів. Скрипт SSH-деплою
-окремо завантажує серверний `.env`, який має бути довіреним shell-файлом.
+`.env.example` описує змінні середовища. Django автоматично читає `.env` у корені
+проєкту через `python-dotenv`, зокрема під час запуску Gunicorn через Supervisor.
+Змінні середовища процесу мають пріоритет. Скрипт SSH-деплою також завантажує цей
+файл, тому використовуйте прості рядки `KEY=value` без shell-команд і підстановок.
 
 ## Перевірки
 
@@ -46,8 +47,8 @@ CI виконує перевірки перед SSH-деплоєм; pull request
 
 Згенерувати секрет: `python -c "import secrets; print(secrets.token_urlsafe(64))"`.
 У shell-файлі `.env` беріть значення секретів у лапки. Захистіть файл від
-читання іншими користувачами. Менеджер процесів повинен отримувати ті самі змінні,
-що й команди керування Django.
+читання іншими користувачами. Користувач процесу Gunicorn повинен мати право
+читання `.env`; файл з правами `600` має належати саме цьому користувачу.
 
 HTTPS-перенаправлення, secure cookies та HSTS увімкнені для production.
 `DJANGO_TRUST_PROXY_HTTPS=true` дозволяється лише за проксі, який видаляє
@@ -69,8 +70,21 @@ HSTS для піддоменів і preload навмисно вимкнені; `
    Django обслуговує медіа лише локально при `DEBUG=true`.
 5. Встановіть залежності, виконайте `python manage.py check --deploy`,
    `python manage.py migrate --noinput` і `python manage.py collectstatic --noinput`.
-6. Перезапустіть WSGI/ASGI-сервіс через наявний менеджер процесів і перевірте сайт.
-   Назва сервісу в репозиторії відсутня, тому workflow не виконує його перезапуск.
+6. Перезапустіть сервіс командою `sudo supervisorctl restart lifehacks.in.ua`.
+   Якщо він зупинений, використовуйте `sudo supervisorctl start lifehacks.in.ua`.
+   Workflow не виконує перезапуск: дозвіл sudo для SSH-користувача не перевірявся.
+
+При `ERROR (spawn error)` подивіться конкретну помилку:
+
+```bash
+sudo supervisorctl status lifehacks.in.ua
+sudo supervisorctl tail lifehacks.in.ua stderr
+sudo supervisorctl tail lifehacks.in.ua stdout
+```
+
+Переконайтеся, що Supervisor запускає Gunicorn із того самого `venv`, куди
+встановлені залежності. `.env` повинен лежати поруч із `manage.py`.
+Експорт змінних у SSH-сеансі не передає їх вже запущеному Supervisor.
 
 `main/static/` — вихідні ресурси; `staticfiles/` —
 результат `collectstatic`; `media/` — нові завантаження. Старі медіафайли
