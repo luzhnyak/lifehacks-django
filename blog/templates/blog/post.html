@@ -1,9 +1,9 @@
-{% extends "layout.html" %} 
+{% extends "layout.html" %}
 
 {% block title %}<title>{{ post.title }} - Lifehacks</title>{% endblock %}
 
 {% block metatags %}
-    <meta name="description" content="{{ post.anons }}" />    
+    <meta name="description" content="{{ post.anons }}" />
     <link rel="canonical" href="https://lifehacks.in.ua/posts/{{ post.slug }}" />
     <meta property="og:title" content="{{ post.title }}" />
     <meta property="og:description" content="{{ post.anons }}" />
@@ -14,7 +14,7 @@
     {% else %}
     <meta property="og:image" content="https://lifehacks.in.ua/static/img/image.jpg" />
     {% endif %}
-{% endblock %} 
+{% endblock %}
 
 {% block content %}
   <h1>{{ post.title }}</h1>
@@ -26,32 +26,32 @@
       </li>
       <li class="breadcrumb-item">
         <a href="/posts">Лайфхаки</a> <span class="divider"></span>
-      </li>      
+      </li>
       <li class="breadcrumb-item active" aria-current="page">
         {{ post.title }}
       </li>
     </ul>
   </nav>
 
-  <article class="article-content">    
-    <p>{{ post.content|safe }}</p>
+  <article class="article-content">
+    {{ post.sanitized_content|safe }}
     {% if post.image %}
     <div class="container">
-      <img class="d-block mx-auto" src="/media/{{ post.image }}" alt="{{ post.title }}" />
+      <img class="d-block mx-auto" src="{{ post.image.url }}" alt="{{ post.title }}" />
     </div>
     {% endif %}
-    {% if post.youtube %}    
+    {% if post.youtube %}
     <div class="video">
       <iframe width="560" height="315" src="https://www.youtube.com/embed/{{ post.youtube }}" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
     </div>
-    {% endif %} 
-    <div class="mt-4">      
-      {% for category in post.categories.all %}    
-      <a class="btn btn-outline-secondary btn-sm" href="/posts/?category={{ category.slug }}" role="button">{{ category.name }}</a>
-      {%endfor%}  
-    </div>    							
+    {% endif %}
+    <div class="mt-4">
+      {% for category in post.categories.all %}
+      <a class="btn btn-outline-secondary btn-sm" href="{{ category.get_absolute_url }}" role="button">{{ category.name }}</a>
+      {%endfor%}
+    </div>
   </article>
-{% endblock %} 
+{% endblock %}
 
 {% block disqus %}
 {% include 'includes/_disqus.html' %}

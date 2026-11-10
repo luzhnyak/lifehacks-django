@@ -1,23 +1,23 @@
 {% extends "layout.html" %}
 
-{% block title %}<title>{{ category.description }} - Lifehacks</title>{% endblock %} 
+{% block title %}<title>{% if category %}{{ category.description|default:category.name }}{% else %}Лайфхаки{% endif %} - Lifehacks</title>{% endblock %}
 
 {% block metatags %}
-    <meta name="description" content="{{ category.description }}" />
-    <link rel="canonical" href="https://lifehacks.in.ua/posts/?category={{ category.slug }}" />
-    <meta property="og:title" content="{{ category.name }}" />
-    <meta property="og:description" content="{{ category.description }}" />
-    <meta property="og:url" content="https://lifehacks.in.ua/posts/?category={{ category.slug }}" />
-    <meta property="og:type" content="website" />    
+    <meta name="description" content="{% if category %}{{ category.description|default:category.name }}{% else %}Лайфхаки в Україні{% endif %}" />
+    <link rel="canonical" href="https://lifehacks.in.ua{% if category %}{{ category.get_absolute_url }}{% else %}{% url 'category_detail' %}{% endif %}" />
+    <meta property="og:title" content="{{ category.name|default:'Лайфхаки' }}" />
+    <meta property="og:description" content="{{ category.description|default:'Лайфхаки в Україні' }}" />
+    <meta property="og:url" content="https://lifehacks.in.ua{% if category %}{{ category.get_absolute_url }}{% else %}{% url 'category_detail' %}{% endif %}" />
+    <meta property="og:type" content="website" />
     {% if category.image %}
     <meta property="og:image" content="https://lifehacks.in.ua/media/{{ category.image }}" />
     {% else %}
     <meta property="og:image" content="https://lifehacks.in.ua/static/img/image.jpg" />
     {% endif %}
-{% endblock %} 
+{% endblock %}
 
 {% block content %}
-<h1>{{ category.description }}</h1>
+<h1>{% if category %}{{ category.description|default:category.name }}{% else %}Лайфхаки{% endif %}</h1>
 
 <nav aria-label="breadcrumb">
   <ul class="breadcrumb">
@@ -27,7 +27,7 @@
 
     <li class="breadcrumb-item">
       <a href="/posts">Лайфхаки</a> <span class="divider"></span>
-    </li>    
+    </li>
 
     <li class="breadcrumb-item active" aria-current="page">
       {{ category.name }}
@@ -46,26 +46,26 @@
     <ul class="pagination justify-content-center">
       {% if page_obj.has_previous %}
         <li class="page-item">
-          <a class="page-link" href="?page=1">&laquo; First</a>
+          <a class="page-link" href="{% querystring page=1 %}">&laquo; First</a>
         </li>
         <li class="page-item">
-          <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+          <a class="page-link" href="{% querystring page=page_obj.previous_page_number %}">Previous</a>
         </li>
       {% else %}
         <li class="page-item disabled"><a class="page-link">&laquo; First</a></li>
         <li class="page-item disabled"><a class="page-link">Previous</a></li>
       {% endif %}
-  
+
       <li class="page-item active">
         <a class="page-link" href="#">{{ page_obj.number }}</a>
       </li>
-  
+
       {% if page_obj.has_next %}
         <li class="page-item">
-          <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a>
+          <a class="page-link" href="{% querystring page=page_obj.next_page_number %}">Next</a>
         </li>
         <li class="page-item">
-          <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">Last &raquo;</a>
+          <a class="page-link" href="{% querystring page=page_obj.paginator.num_pages %}">Last &raquo;</a>
         </li>
       {% else %}
         <li class="page-item disabled"><a class="page-link">Next</a></li>
@@ -73,6 +73,6 @@
       {% endif %}
     </ul>
   </nav>
-  
+
 </div>
 {% endblock %}

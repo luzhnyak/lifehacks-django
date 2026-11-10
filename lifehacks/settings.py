@@ -1,15 +1,32 @@
 import os
 from pathlib import Path
 
+from django.core.exceptions import ImproperlyConfigured
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-SECRET_KEY = 'django-insecure-@id^n3#6(%q3qcj3#ux#^x8*$0c55b2)uz5tgp-%67%*+)u3t-'
+def env_bool(name, default=False):
+    value = os.environ.get(name, str(default)).strip().lower()
+    if value not in {'true', 'false', '1', '0', 'yes', 'no', 'on', 'off'}:
+        raise ImproperlyConfigured(f'{name} must be a boolean value.')
+    return value in {'true', '1', 'yes', 'on'}
 
-DEBUG = True
 
-ALLOWED_HOSTS = ['lifehacks.in.ua',
-                 'www.lifehacks.in.ua', 'localhost', '127.0.0.1']
+DEBUG = env_bool('DJANGO_DEBUG')
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', '')
+if not SECRET_KEY:
+    if not DEBUG:
+        raise ImproperlyConfigured('Set DJANGO_SECRET_KEY before starting in production.')
+    SECRET_KEY = 'django-insecure-local-development-only-do-not-use-in-production'
+
+ALLOWED_HOSTS = [
+    host.strip() for host in os.environ.get(
+        'DJANGO_ALLOWED_HOSTS', 'localhost,127.0.0.1' if DEBUG else ''
+    ).split(',') if host.strip()
+]
+if not DEBUG and not ALLOWED_HOSTS:
+    raise ImproperlyConfigured('Set DJANGO_ALLOWED_HOSTS before starting in production.')
 
 
 INSTALLED_APPS = [
@@ -56,7 +73,7 @@ WSGI_APPLICATION = 'lifehacks.wsgi.application'
 
 
 # Database
-# https://docs.djangoproject.com/en/5.1/ref/settings/#databases
+# https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 DATABASES = {
     'default': {
@@ -67,7 +84,7 @@ DATABASES = {
 
 
 # Password validation
-# https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
+# https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -86,11 +103,11 @@ AUTH_PASSWORD_VALIDATORS = [
 
 
 # Internationalization
-# https://docs.djangoproject.com/en/5.1/topics/i18n/
+# https://docs.djangoproject.com/en/5.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'uk'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Kyiv'
 
 USE_I18N = True
 
@@ -98,25 +115,33 @@ USE_TZ = True
 
 
 # Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.1/howto/static-files/
+# https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-# STATICFILES_DIRS = [
-#     BASE_DIR / "static",
-#     # "/var/www/static/",
-# ]
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+# Source assets live in main/static and are found by AppDirectoriesFinder.
+# Do not include the legacy static directory: it contains collected files/media.
 
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'static', 'media')
+MEDIA_ROOT = Path(os.environ.get('DJANGO_MEDIA_ROOT', BASE_DIR / 'media'))
 
 # Default primary key field type
-# https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
+# https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-CSRF_COOKIE_SECURE = True
-SESSION_COOKIE_SECURE = True
-CSRF_TRUSTED_ORIGINS = ['https://lifehacks.in.ua',
-                        'https://www.lifehacks.in.ua']
+CSRF_COOKIE_SECURE = not DEBUG
+SESSION_COOKIE_SECURE = not DEBUG
+SECURE_SSL_REDIRECT = env_bool('DJANGO_SECURE_SSL_REDIRECT', not DEBUG)
+SECURE_HSTS_SECONDS = int(os.environ.get('DJANGO_SECURE_HSTS_SECONDS', '0' if DEBUG else '31536000'))
+SECURE_HSTS_INCLUDE_SUBDOMAINS = False
+SECURE_HSTS_PRELOAD = False
+SECURE_CONTENT_TYPE_NOSNIFF = True
+CSRF_TRUSTED_ORIGINS = [
+    origin.strip() for origin in os.environ.get('DJANGO_CSRF_TRUSTED_ORIGINS', '').split(',')
+    if origin.strip()
+]
+# Enable only when the trusted reverse proxy strips client-supplied values.
+if env_bool('DJANGO_TRUST_PROXY_HTTPS'):
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
