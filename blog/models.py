@@ -1,4 +1,5 @@
 import itertools
+from uuid import uuid4
 import nh3
 from html import unescape
 from io import BytesIO
@@ -108,3 +109,24 @@ class Post(models.Model):
 
     def __str__(self):
         return self.title
+
+
+def post_attachment_upload_to(instance, filename):
+    return f'posts/{instance.post_id}/{uuid4().hex}{PurePosixPath(filename).suffix.lower()}'
+
+
+class PostImage(models.Model):
+    post = models.ForeignKey(Post, related_name='images', on_delete=models.CASCADE)
+    image = models.ImageField(upload_to=post_attachment_upload_to)
+
+    class Meta:
+        ordering = ['pk']
+        verbose_name = 'зображення допису'
+        verbose_name_plural = 'Зображення допису'
+
+    def save(self, *args, **kwargs):
+        prepare_image(self.image, (800, 600))
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return PurePosixPath(self.image.name).name
